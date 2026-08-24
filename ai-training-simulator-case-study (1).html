@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>From 300+ Real Customer Chats to an AI Training Simulator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F6F3;
+    --paper:#FFFFFF;
+    --ink:#12211C;
+    --muted:#5B6862;
+    --faint:#8B968F;
+    --line:#DBE3DC;
+    --brand:#1C4B3E;
+    --brand-soft:#E4EEE9;
+    --steel:#2F6F91;
+    --steel-soft:#E5EEF2;
+    --brick:#A6392C;
+    --brick-soft:#F6E7E3;
+    --amber:#B9812C;
+    --amber-soft:#F6EEDD;
+    --radius:14px;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 1px 1px, rgba(28,75,62,0.07) 1px, transparent 0) 0 0/28px 28px,
+      var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 40px 80px;}
+  a{color:inherit;}
+
+  /* ---------- HEADER ---------- */
+  header.hero{
+    max-width:var(--maxw);margin:0 auto;padding:64px 40px 48px;
+    display:flex;flex-direction:column;align-items:flex-start;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--brand);font-weight:600;
+    display:flex;align-items:center;gap:10px;margin-bottom:22px;
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--brand);display:inline-block;}
+  h1.headline{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:clamp(34px,4.6vw,58px);
+    line-height:1.06;
+    letter-spacing:-0.01em;
+    max-width:920px;
+    margin:0 0 20px;
+  }
+  h1.headline em{
+    font-style:italic;font-weight:500;color:var(--brand);
+  }
+  .subhead{
+    font-size:19px;color:var(--muted);max-width:640px;line-height:1.5;margin:0 0 32px;
+  }
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;}
+  .chip{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:.02em;
+    background:var(--paper);border:1px solid var(--line);
+    padding:8px 14px;border-radius:100px;color:var(--ink);
+    display:flex;align-items:center;gap:8px;
+  }
+  .chip .dot{width:6px;height:6px;border-radius:50%;background:var(--brand);}
+
+  /* ---------- FLOW / STAGES ---------- */
+  .flow{position:relative;margin-top:20px;}
+  .flow::before{
+    content:"";position:absolute;left:23px;top:14px;bottom:14px;width:1px;
+    background:repeating-linear-gradient(to bottom, var(--line) 0 6px, transparent 6px 11px);
+  }
+  .stage{position:relative;padding:56px 0 0 76px;}
+  .stage:first-child{padding-top:48px;}
+  .stage-num{
+    position:absolute;left:0;top:56px;width:48px;height:48px;border-radius:50%;
+    background:var(--paper);border:1.5px solid var(--brand);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:var(--brand);
+    z-index:2;
+  }
+  .stage:first-child .stage-num{top:48px;}
+  .stage-label{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:8px;font-weight:600;
+  }
+  .stage h2{
+    font-family:'Fraunces',serif;font-weight:600;font-size:clamp(22px,2.4vw,30px);
+    margin:0 0 18px;letter-spacing:-0.01em;
+  }
+  .stage-body{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+    padding:32px;box-shadow:0 1px 2px rgba(18,33,28,0.03);}
+  .caption{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:500;
+    font-size:18px;color:var(--brand);margin-top:20px;padding-left:18px;
+    border-left:2px solid var(--brand);line-height:1.4;
+  }
+
+  /* ---------- STAT GRID ---------- */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .stat-card{
+    background:var(--bg);border:1px solid var(--line);border-radius:10px;
+    padding:18px 16px;
+  }
+  .stat-card .num{font-family:'Fraunces',serif;font-weight:700;font-size:26px;color:var(--ink);}
+  .stat-card .lbl{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.35;}
+  .note-line{
+    display:flex;align-items:center;gap:8px;margin-top:16px;font-size:13.5px;color:var(--muted);
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .note-line svg{flex-shrink:0;}
+
+  /* ---------- STAGE 2 : discovery ---------- */
+  .discovery-flex{display:flex;gap:32px;align-items:center;}
+  .bubble-cluster{position:relative;width:230px;height:150px;flex-shrink:0;}
+  .mini-bubble{
+    position:absolute;background:var(--steel-soft);border:1px solid var(--steel);
+    border-radius:10px 10px 10px 2px;padding:7px 10px;font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;color:var(--steel);white-space:nowrap;
+  }
+  .repo{
+    position:absolute;right:6px;top:38px;width:70px;height:70px;border-radius:50%;
+    background:var(--brand);display:flex;align-items:center;justify-content:center;
+  }
+  .discovery-right{flex:1;}
+  .big-stat{font-family:'Fraunces',serif;font-weight:700;font-size:38px;color:var(--brand);margin-bottom:6px;}
+  .big-stat-lbl{font-size:14px;color:var(--muted);margin-bottom:18px;}
+  .tag-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag{
+    font-size:13px;background:var(--brand-soft);color:var(--brand);
+    padding:6px 12px;border-radius:6px;font-weight:600;
+  }
+
+  /* ---------- STAGE 3 : analysis pipeline ---------- */
+  .pipeline{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;}
+  .pipe-step{
+    flex:1;min-width:150px;background:var(--bg);border:1px solid var(--line);
+    border-radius:10px;padding:16px 14px;text-align:left;position:relative;margin:4px;
+  }
+  .pipe-step .pnum{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--faint);}
+  .pipe-step .ptxt{font-size:14px;font-weight:600;margin-top:6px;line-height:1.3;}
+  .pipe-arrow{display:flex;align-items:center;color:var(--faint);padding:0 2px;}
+  .highlight-strip{
+    margin-top:20px;background:var(--steel-soft);border:1px solid var(--steel);
+    border-radius:10px;padding:14px 18px;font-size:14px;color:var(--steel);font-weight:600;
+    display:flex;align-items:center;gap:10px;
+  }
+
+  /* ---------- STAGE 4 : simulator centerpiece ---------- */
+  .stage-simulator .stage-body{
+    background:var(--paper);border:1.5px solid var(--brand);padding:36px;
+    background-image:linear-gradient(180deg, var(--brand-soft) 0%, rgba(255,255,255,0) 140px);
+  }
+  .sim-quote{
+    font-family:'Fraunces',serif;font-weight:600;font-style:italic;font-size:24px;
+    color:var(--ink);max-width:560px;line-height:1.32;margin-bottom:8px;
+  }
+  .difficulty-badge{
+    display:inline-flex;align-items:center;gap:8px;margin:14px 0 28px;
+    background:var(--brick-soft);color:var(--brick);border:1px solid var(--brick);
+    font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.06em;
+    padding:7px 14px;border-radius:100px;text-transform:uppercase;
+  }
+  .difficulty-badge .pulse{width:7px;height:7px;border-radius:50%;background:var(--brick);}
+  .sim-layout{display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap;}
+  .chat-window{
+    flex:1.3;min-width:340px;background:#FBFCFB;border:1px solid var(--line);border-radius:12px;
+    overflow:hidden;box-shadow:0 6px 20px rgba(18,33,28,0.06);
+  }
+  .chat-titlebar{
+    background:var(--ink);color:#fff;padding:10px 16px;font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px;display:flex;align-items:center;justify-content:space-between;letter-spacing:.03em;
+  }
+  .chat-titlebar .live{display:flex;align-items:center;gap:6px;color:#EFF5F2;}
+  .chat-titlebar .live::before{content:"";width:6px;height:6px;border-radius:50%;background:#5FBF8A;}
+  .chat-body{padding:20px;display:flex;flex-direction:column;gap:14px;}
+  .msg{max-width:78%;padding:11px 14px;border-radius:12px;font-size:14px;line-height:1.42;}
+  .msg .who{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;
+    text-transform:uppercase;margin-bottom:5px;opacity:.7;}
+  .msg.customer{align-self:flex-start;background:var(--brick-soft);color:#5A241B;border-bottom-left-radius:3px;}
+  .msg.associate{align-self:flex-end;background:var(--brand-soft);color:var(--brand);border-bottom-right-radius:3px;}
+  .skills-panel{flex:1;min-width:260px;}
+  .skills-panel .sp-label{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:12px;
+  }
+  .skill-chips{display:flex;flex-wrap:wrap;gap:9px;}
+  .skill-chip{
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:9px 13px;font-size:13px;font-weight:600;color:var(--ink);
+    display:flex;align-items:center;gap:7px;
+  }
+  .skill-chip svg{color:var(--brand);flex-shrink:0;}
+
+  /* ---------- STAGE 5 : learning loop ---------- */
+  .loop-row{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin-bottom:24px;}
+  .loop-node{
+    background:var(--bg);border:1px solid var(--line);border-radius:100px;
+    padding:12px 18px;font-size:13.5px;font-weight:600;text-align:center;margin:5px;
+  }
+  .loop-node.hl{background:var(--brand);color:#fff;border-color:var(--brand);}
+  .loop-arrow{color:var(--faint);padding:0 2px;}
+  .avatars-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+  .avatar-dot{
+    width:30px;height:30px;border-radius:50%;background:var(--steel-soft);
+    border:1px solid var(--steel);display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--steel);font-weight:600;
+    margin-left:-8px;
+  }
+  .avatar-dot:first-child{margin-left:0;}
+  .avatars-more{font-size:13px;color:var(--muted);margin-left:14px;}
+
+  /* ---------- STAGE 6 : outcome ---------- */
+  .outcome-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:26px;}
+  .outcome-card{
+    background:var(--brand);color:#fff;border-radius:12px;padding:24px 18px;
+  }
+  .outcome-card .onum{font-family:'Fraunces',serif;font-weight:700;font-size:30px;}
+  .outcome-card .olbl{font-size:12.5px;opacity:.85;margin-top:6px;line-height:1.35;}
+  .outcome-quote{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:21px;
+    line-height:1.45;color:var(--ink);max-width:760px;
+  }
+
+  /* ---------- SECONDARY LAYER ---------- */
+  .secondary{
+    margin:64px 0 0;padding-top:36px;border-top:1px solid var(--line);
+  }
+  .secondary .sec-label{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:16px;font-weight:600;
+  }
+  .sec-flow{display:flex;flex-wrap:wrap;align-items:center;gap:0;}
+  .sec-node{
+    font-size:12.5px;color:var(--muted);background:var(--paper);border:1px solid var(--line);
+    padding:8px 13px;border-radius:7px;margin:4px 0;white-space:nowrap;
+  }
+  .sec-arrow{color:var(--faint);padding:0 6px;font-size:12px;}
+  .sec-badge{
+    display:inline-block;margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;
+    color:var(--brand);background:var(--brand-soft);padding:6px 12px;border-radius:100px;font-weight:600;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{margin-top:56px;padding-top:36px;border-top:1px solid var(--line);text-align:left;}
+  .final-flow{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--brand);
+    display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:22px;font-weight:600;
+  }
+  .final-flow .seg{background:var(--brand-soft);padding:7px 12px;border-radius:6px;}
+  .closing{
+    font-family:'Fraunces',serif;font-weight:600;font-size:23px;color:var(--ink);
+    max-width:640px;line-height:1.4;margin-bottom:20px;
+  }
+  .disclaimer{font-size:12px;color:var(--faint);max-width:640px;line-height:1.5;}
+
+  @media (max-width:760px){
+    .stat-grid,.outcome-grid{grid-template-columns:repeat(2,1fr);}
+    .stage{padding-left:56px;}
+    .flow::before{left:15px;}
+    .stage-num{width:34px;height:34px;font-size:11px;top:40px;}
+  }
+
+  /* ---------- INTERACTIVITY ---------- */
+  .stage{opacity:0;transform:translateY(18px);transition:opacity .6s ease, transform .6s ease;}
+  .stage.in-view{opacity:1;transform:translateY(0);}
+  .stage-num{transition:background .35s ease, color .35s ease, transform .35s ease;}
+  .stage-num.active{background:var(--brand);color:#fff;transform:scale(1.08);}
+  .flow-progress{
+    position:absolute;left:23px;top:14px;width:1px;background:var(--brand);
+    height:0%;transition:height .15s linear;z-index:1;
+  }
+
+  .stat-card{transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;cursor:default;}
+  .stat-card:hover{border-color:var(--brand);transform:translateY(-2px);box-shadow:0 6px 16px rgba(18,33,28,0.08);}
+
+  .skill-chip{position:relative;cursor:default;transition:background .2s ease, border-color .2s ease;}
+  .skill-chip:hover{background:var(--brand-soft);border-color:var(--brand);}
+  .skill-chip .tip{
+    position:absolute;bottom:calc(100% + 8px);left:0;background:var(--ink);color:#fff;
+    font-size:11.5px;font-weight:500;font-family:'Inter',sans-serif;padding:8px 11px;border-radius:7px;
+    width:200px;line-height:1.4;opacity:0;pointer-events:none;transform:translateY(4px);
+    transition:opacity .18s ease, transform .18s ease;z-index:5;
+  }
+  .skill-chip:hover .tip{opacity:1;transform:translateY(0);}
+
+  .sim-controls{display:flex;align-items:center;gap:12px;padding:12px 20px;border-top:1px solid var(--line);background:#FBFCFB;}
+  .sim-btn{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.02em;
+    background:var(--brand);color:#fff;border:none;padding:9px 15px;border-radius:7px;cursor:pointer;
+    transition:background .18s ease, transform .1s ease;
+  }
+  .sim-btn:hover{background:#153a30;}
+  .sim-btn:active{transform:scale(.97);}
+  .sim-btn:disabled{background:var(--faint);cursor:not-allowed;}
+  .sim-reset{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted);background:none;
+    border:1px solid var(--line);padding:8px 13px;border-radius:7px;cursor:pointer;transition:border-color .18s ease,color .18s ease;
+  }
+  .sim-reset:hover{border-color:var(--brand);color:var(--brand);}
+  .sim-hint{font-size:12px;color:var(--faint);margin-left:auto;}
+  .msg{opacity:0;transform:translateY(6px);animation:msgIn .4s ease forwards;}
+  @keyframes msgIn{to{opacity:1;transform:translateY(0);}}
+  .typing{align-self:flex-start;display:flex;gap:4px;padding:11px 14px;background:var(--brick-soft);border-radius:12px;border-bottom-left-radius:3px;width:fit-content;}
+  .typing span{width:6px;height:6px;border-radius:50%;background:#A6392C;opacity:.4;animation:typingBounce 1s infinite ease-in-out;}
+  .typing span:nth-child(2){animation-delay:.15s;}
+  .typing span:nth-child(3){animation-delay:.3s;}
+  @keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-4px);opacity:1;}}
+  .score-live{
+    display:flex;align-items:center;gap:8px;margin-top:14px;padding:10px 14px;background:var(--brand-soft);
+    border-radius:8px;font-size:12.5px;color:var(--brand);font-weight:600;opacity:0;transform:translateY(4px);
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .score-live.show{opacity:1;transform:translateY(0);}
+
+  .loop-node{cursor:pointer;transition:background .3s ease,color .3s ease,border-color .3s ease,transform .2s ease;user-select:none;}
+  .loop-node:hover{transform:translateY(-2px);}
+
+  .outcome-card .onum{transition:opacity .3s ease;}
+
+  .sec-node{cursor:default;transition:border-color .18s ease,color .18s ease;}
+  .sec-node:hover{border-color:var(--brand);color:var(--brand);}
+
+  .scrolltop{
+    position:fixed;bottom:24px;right:24px;width:42px;height:42px;border-radius:50%;
+    background:var(--ink);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;transition:opacity .25s ease, transform .2s ease;z-index:50;
+  }
+  .scrolltop.show{opacity:1;pointer-events:auto;}
+  .scrolltop:hover{transform:translateY(-2px);}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">Case Study — AI-Powered Learning Platform</div>
+  <h1 class="headline">From 300+ Real Customer Chats to an <em>AI Training Simulator</em></h1>
+  <p class="subhead">Preparing 200+ customer support associates for a new chat campaign — in just two months.</p>
+  <div class="meta-row">
+    <span class="chip"><span class="dot"></span>2-Month Build</span>
+    <span class="chip"><span class="dot"></span>200+ Associates Trained</span>
+    <span class="chip"><span class="dot"></span>300+ Real Chats Analyzed</span>
+    <span class="chip"><span class="dot"></span>Business Analysis + Product + AI</span>
+  </div>
+</header>
+
+<div class="wrap">
+<div class="flow">
+
+  <!-- STAGE 1 -->
+  <section class="stage">
+    <div class="stage-num">01</div>
+    <div class="stage-label">The Business Challenge</div>
+    <h2>A brand-new campaign, no time to lose</h2>
+    <div class="stage-body">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="num">2 mo.</div><div class="lbl">Launch deadline</div></div>
+        <div class="stat-card"><div class="num">200+</div><div class="lbl">Support associates to prepare</div></div>
+        <div class="stat-card"><div class="num">2–3</div><div class="lbl">Concurrent chats per associate</div></div>
+        <div class="stat-card"><div class="num">High</div><div class="lbl">Accuracy &amp; service KPIs required</div></div>
+      </div>
+      <div class="note-line">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+        New campaign — associates had no prior experience handling this customer base
+      </div>
+      <p class="caption">"How do we prepare 200+ associates for customers they've never handled before?"</p>
+    </div>
+  </section>
+
+  <!-- STAGE 2 -->
+  <section class="stage">
+    <div class="stage-num">02</div>
+    <div class="stage-label">The Data Discovery</div>
+    <h2>The training data already existed</h2>
+    <div class="stage-body">
+      <div class="discovery-flex">
+        <div class="bubble-cluster">
+          <div class="mini-bubble" style="top:2px;left:0;">"Where's my refund?"</div>
+          <div class="mini-bubble" style="top:40px;left:18px;">"This is the 3rd time..."</div>
+          <div class="mini-bubble" style="top:80px;left:0;">"I need this fixed now"</div>
+          <div class="mini-bubble" style="top:118px;left:24px;">"Can you explain why?"</div>
+          <div class="repo">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+          </div>
+        </div>
+        <div class="discovery-right">
+          <div class="big-stat">300+</div>
+          <div class="big-stat-lbl">Real, anonymized customer chat transcripts</div>
+          <div class="tag-row">
+            <span class="tag">Customer questions</span>
+            <span class="tag">Customer intents</span>
+            <span class="tag">Behaviour patterns</span>
+            <span class="tag">Difficult interactions</span>
+            <span class="tag">Real-world language</span>
+          </div>
+        </div>
+      </div>
+      <p class="caption">"The training data already existed — inside real customer conversations."</p>
+    </div>
+  </section>
+
+  <!-- STAGE 3 -->
+  <section class="stage">
+    <div class="stage-num">03</div>
+    <div class="stage-label">The Analysis</div>
+    <h2>Turning raw conversations into structured intelligence</h2>
+    <div class="stage-body">
+      <div class="pipeline">
+        <div class="pipe-step"><div class="pnum">INPUT</div><div class="ptxt">Chat Transcripts</div></div>
+        <div class="pipe-arrow">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="pipe-step"><div class="pnum">EXTRACTED</div><div class="ptxt">Customer Queries</div></div>
+        <div class="pipe-arrow">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="pipe-step"><div class="pnum">MAPPED</div><div class="ptxt">Intent &amp; Behaviour Patterns</div></div>
+        <div class="pipe-arrow">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="pipe-step"><div class="pnum">REVIEWED</div><div class="ptxt">QA Findings</div></div>
+        <div class="pipe-arrow">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="pipe-step"><div class="pnum">OUTPUT</div><div class="ptxt">Expected / Better Responses</div></div>
+      </div>
+      <div class="highlight-strip">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+        Real customer behaviour + QA insights, structured into a single knowledge base
+      </div>
+    </div>
+  </section>
+
+  <!-- STAGE 4 : centerpiece -->
+  <section class="stage stage-simulator">
+    <div class="stage-num">04</div>
+    <div class="stage-label">The AI Simulator</div>
+    <h2>The centerpiece: an AI customer, not a chatbot</h2>
+    <div class="stage-body">
+      <div class="sim-quote">"I didn't build a friendly chatbot. I built a difficult customer."</div>
+      <div class="difficulty-badge"><span class="pulse"></span>Simulation Difficulty: Extreme</div>
+      <div class="sim-layout">
+        <div class="chat-window">
+          <div class="chat-titlebar"><span>Practice Simulation — Session #0417</span><span class="live">Live</span></div>
+          <div class="chat-body" id="chatBody"></div>
+          <div class="sim-controls">
+            <button class="sim-btn" id="simNext">Continue simulation</button>
+            <button class="sim-reset" id="simReset">Restart</button>
+            <span class="sim-hint" id="simHint">Step 0 / 4</span>
+          </div>
+        </div>
+        <div class="skills-panel">
+          <div class="sp-label">Evaluated in real time</div>
+          <div class="skill-chips">
+            <span class="skill-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>Accuracy<span class="tip">Did the associate give factually correct information?</span></span>
+            <span class="skill-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5z"/></svg>Product Knowledge<span class="tip">Could they apply policy and product detail without hesitation?</span></span>
+            <span class="skill-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 10-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 000-7.8z"/></svg>Empathy<span class="tip">Did the response acknowledge how the customer feels?</span></span>
+            <span class="skill-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Patience<span class="tip">Did tone stay steady under repeated pressure?</span></span>
+            <span class="skill-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Tone<span class="tip">Was language professional without sounding scripted?</span></span>
+            <span class="skill-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 3H5a2 2 0 00-2 2v4M15 3h4a2 2 0 012 2v4M9 21H5a2 2 0 01-2-2v-4M15 21h4a2 2 0 002-2v-4"/></svg>Problem Solving<span class="tip">Did they move toward a concrete resolution?</span></span>
+            <span class="skill-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>De-escalation<span class="tip">Did frustration drop over the course of the chat?</span></span>
+            <span class="skill-chip"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l8 4v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6z"/></svg>Policy Adherence<span class="tip">Did the fix stay within approved policy boundaries?</span></span>
+          </div>
+          <div class="score-live" id="scoreLive">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+            <span id="scoreText">Session complete — de-escalation and accuracy both scored strong</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAGE 5 -->
+  <section class="stage">
+    <div class="stage-num">05</div>
+    <div class="stage-label">The Learning Loop</div>
+    <h2>Safe environment. Realistic pressure. Repeatable practice.</h2>
+    <div class="stage-body">
+      <div class="loop-row" id="loopRow">
+        <div class="loop-node hl">Practice</div><div class="loop-arrow">→</div>
+        <div class="loop-node">AI Customer Challenge</div><div class="loop-arrow">→</div>
+        <div class="loop-node">Performance Evaluation</div><div class="loop-arrow">→</div>
+        <div class="loop-node">Feedback</div><div class="loop-arrow">→</div>
+        <div class="loop-node">Retry</div><div class="loop-arrow">→</div>
+        <div class="loop-node hl">Improvement</div>
+      </div>
+      <div class="sim-hint" style="margin-top:-8px;margin-bottom:10px;display:block;">Click a stage, or watch the loop cycle on its own</div>
+      <div class="avatars-row">
+        <div class="avatar-dot">A1</div><div class="avatar-dot">A2</div><div class="avatar-dot">A3</div>
+        <div class="avatar-dot">A4</div><div class="avatar-dot">A5</div>
+        <div class="avatars-more">+195 more associates practicing in parallel</div>
+      </div>
+      <p class="caption">"Safe environment. Realistic pressure. Repeatable practice."</p>
+    </div>
+  </section>
+
+  <!-- STAGE 6 -->
+  <section class="stage">
+    <div class="stage-num">06</div>
+    <div class="stage-label">The Outcome</div>
+    <h2>From simulator to campaign-ready floor</h2>
+    <div class="stage-body">
+      <div class="outcome-grid">
+        <div class="outcome-card"><div class="onum" data-count="200" data-suffix="+">0</div><div class="olbl">Associates trained</div></div>
+        <div class="outcome-card"><div class="onum" data-count="300" data-suffix="+">0</div><div class="olbl">Real chats analyzed</div></div>
+        <div class="outcome-card"><div class="onum" data-count="2" data-suffix=" mo.">0</div><div class="olbl">Launch window</div></div>
+        <div class="outcome-card"><div class="onum" data-static="Ongoing">Ongoing</div><div class="olbl">Continued internal usage</div></div>
+      </div>
+      <div class="outcome-quote">"When associates learned to handle the difficult simulated customer, real customer conversations became easier to handle."</div>
+    </div>
+  </section>
+
+</div>
+
+  <!-- SECONDARY LAYER -->
+  <div class="secondary">
+    <div class="sec-label">The Work Behind the AI</div>
+    <div class="sec-flow">
+      <span class="sec-node">Problem Identification</span><span class="sec-arrow">→</span>
+      <span class="sec-node">Stakeholder Collaboration</span><span class="sec-arrow">→</span>
+      <span class="sec-node">Data Analysis</span><span class="sec-arrow">→</span>
+      <span class="sec-node">Requirement Definition</span><span class="sec-arrow">→</span>
+      <span class="sec-node">Solution Design</span><span class="sec-arrow">→</span>
+      <span class="sec-node">Testing</span><span class="sec-arrow">→</span>
+      <span class="sec-node">Deployment</span><span class="sec-arrow">→</span>
+      <span class="sec-node">Continuous Improvement</span>
+    </div>
+    <span class="sec-badge">Business Analysis + Product Thinking + AI</span>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="final-flow">
+      <span class="seg">Real Operational Problem</span><span>→</span>
+      <span class="seg">Real Customer Data</span><span>→</span>
+      <span class="seg">AI-Powered Simulation</span><span>→</span>
+      <span class="seg">Measurable Organizational Adoption</span>
+    </div>
+    <div class="closing">Built to solve a training problem. Designed as a scalable learning platform.</div>
+    <div class="disclaimer">All chat content shown is fictional and illustrative. No real customer names, company names, or confidential information are represented.</div>
+  </footer>
+</div>
+
+<button class="scrolltop" id="scrollTop" aria-label="Back to top">
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+(function(){
+  /* ---- scroll reveal + active stage marker ---- */
+  const stages = document.querySelectorAll('.stage');
+  const nums = document.querySelectorAll('.stage-num');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      const idx = Array.from(stages).indexOf(e.target);
+      if(e.isIntersecting){
+        e.target.classList.add('in-view');
+        if(idx>=0) nums[idx].classList.add('active');
+      }
+    });
+  }, {threshold:0.25});
+  stages.forEach(s=>io.observe(s));
+
+  /* ---- back to top button ---- */
+  const topBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', ()=>{
+    topBtn.classList.toggle('show', window.scrollY > 600);
+  });
+  topBtn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+  /* ---- chat simulator ---- */
+  const script = [
+    {who:'customer', label:'AI Customer', text:"This is the second time I'm explaining this. I need it fixed right now, not another script."},
+    {who:'associate', label:'Associate (Trainee)', text:"I hear you — let's skip the script. I'm pulling up your case now so I can fix this directly."},
+    {who:'customer', label:'AI Customer', text:"Fine. But if this isn't sorted today, I'm done waiting."},
+    {who:'associate', label:'Associate (Trainee)', text:"Understood. Here's exactly what I'm doing and how long it will take."}
+  ];
+  const chatBody = document.getElementById('chatBody');
+  const nextBtn = document.getElementById('simNext');
+  const resetBtn = document.getElementById('simReset');
+  const hint = document.getElementById('simHint');
+  const scoreLive = document.getElementById('scoreLive');
+  let step = 0;
+  let busy = false;
+
+  function renderStep(){
+    hint.textContent = `Step ${step} / ${script.length}`;
+    scoreLive.classList.remove('show');
+    if(step >= script.length){
+      nextBtn.disabled = true;
+      nextBtn.textContent = 'Simulation complete';
+      setTimeout(()=> scoreLive.classList.add('show'), 200);
+      return;
+    }
+    nextBtn.disabled = false;
+    nextBtn.textContent = 'Continue simulation';
+  }
+
+  function appendMessage(msg){
+    const div = document.createElement('div');
+    div.className = `msg ${msg.who}`;
+    div.innerHTML = `<div class="who">${msg.label}</div>${msg.text}`;
+    chatBody.appendChild(div);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function showTyping(who, cb){
+    const t = document.createElement('div');
+    t.className = 'typing';
+    if(who === 'associate'){ t.style.alignSelf='flex-end'; t.style.background = 'var(--brand-soft)'; t.querySelectorAll && null; }
+    t.innerHTML = '<span></span><span></span><span></span>';
+    chatBody.appendChild(t);
+    chatBody.scrollTop = chatBody.scrollHeight;
+    setTimeout(()=>{ t.remove(); cb(); }, 550);
+  }
+
+  nextBtn.addEventListener('click', ()=>{
+    if(busy || step >= script.length) return;
+    busy = true;
+    nextBtn.disabled = true;
+    const msg = script[step];
+    showTyping(msg.who, ()=>{
+      appendMessage(msg);
+      step++;
+      busy = false;
+      renderStep();
+    });
+  });
+
+  resetBtn.addEventListener('click', ()=>{
+    step = 0;
+    busy = false;
+    chatBody.innerHTML = '';
+    renderStep();
+  });
+
+  renderStep();
+
+  /* ---- learning loop: auto-cycle + click to pin ---- */
+  const loopNodes = Array.from(document.querySelectorAll('#loopRow .loop-node'));
+  let loopIdx = 0;
+  let loopPaused = false;
+  function cycleLoop(){
+    if(loopPaused) return;
+    loopNodes.forEach(n=>n.classList.remove('hl'));
+    loopNodes[loopIdx].classList.add('hl');
+    loopIdx = (loopIdx + 1) % loopNodes.length;
+  }
+  cycleLoop();
+  const loopTimer = setInterval(cycleLoop, 1100);
+  loopNodes.forEach((n, i)=>{
+    n.addEventListener('click', ()=>{
+      loopPaused = true;
+      loopNodes.forEach(x=>x.classList.remove('hl'));
+      n.classList.add('hl');
+      loopIdx = (i+1) % loopNodes.length;
+      clearTimeout(n._resumeTimer);
+      n._resumeTimer = setTimeout(()=>{ loopPaused = false; }, 3000);
+    });
+  });
+
+  /* ---- outcome count-up ---- */
+  const outcomeSection = document.querySelector('.outcome-grid');
+  const counters = document.querySelectorAll('.onum[data-count]');
+  let counted = false;
+  const countIO = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting && !counted){
+        counted = true;
+        counters.forEach(el=>{
+          const target = parseInt(el.getAttribute('data-count'), 10);
+          const suffix = el.getAttribute('data-suffix') || '';
+          const duration = 900;
+          const start = performance.now();
+          function tick(now){
+            const p = Math.min((now-start)/duration, 1);
+            const eased = 1 - Math.pow(1-p, 3);
+            el.textContent = Math.round(eased*target) + suffix;
+            if(p<1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        });
+      }
+    });
+  }, {threshold:0.4});
+  if(outcomeSection) countIO.observe(outcomeSection);
+})();
+</script>
+
+</body>
+</html>
